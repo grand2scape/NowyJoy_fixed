@@ -19,7 +19,7 @@ public class Heart : MonoBehaviour
     }
     private void OnTriggerEnter2D(Collider2D collision)
     {
-        if (collision.CompareTag("Enemy"))
+        if (collision.CompareTag("Enemy") || collision.CompareTag("Rabbit"))
         {
             OnDamaged();
         }

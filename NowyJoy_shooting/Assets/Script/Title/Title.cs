@@ -63,7 +63,7 @@ public class Title : MonoBehaviour
     {
         image = image.gameObject.GetComponent<Image>();
         image2 = image2.gameObject.GetComponent<Image>();
-        //GM.SetActive(true);
+        GM.SetActive(true);
     }
 
     public void Add(int val)

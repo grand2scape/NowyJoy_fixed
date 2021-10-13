@@ -67,7 +67,10 @@ public class PatternManager : MonoBehaviour
     List<float> v = new List<float>();
     List<float> xx = new List<float>();
     bool isShape = false;
-    
+
+    // 화면 크기
+    public GameObject cam;
+    public float[] camZ;
 
 
     public GameObject NowyJoy;
@@ -86,6 +89,7 @@ public class PatternManager : MonoBehaviour
             isAble_Shape[i] = true;
         }
         ShapeInit();
+        InitCamZ();
     }
 
     private void OnEnable()
@@ -93,7 +97,7 @@ public class PatternManager : MonoBehaviour
 
         StartCoroutine("Shooting");
         Invoke("DoPattern", 5f);
-       //  DoPtn();
+         DoPtn();
     }
     private void Update()
     {
@@ -121,7 +125,7 @@ public class PatternManager : MonoBehaviour
         }
         if (Input.GetKeyDown(KeyCode.A))
         {
-            shapeShoot();
+            Screen_Scale_Control();
         }
         if (Input.GetKeyDown(KeyCode.Z))
         {
@@ -135,6 +139,16 @@ public class PatternManager : MonoBehaviour
                 isAble_Flamingo[i] = true;
             }
             Count = 0;
+        }
+    }
+
+    void InitCamZ()
+    {
+        int index = 0;
+        for (float i = 0.6f; i <= 1.2f; i += 0.05f)
+        {
+            camZ[index] = i * (-1);
+            index++;
         }
     }
     public void DoPattern()
@@ -192,7 +206,7 @@ public class PatternManager : MonoBehaviour
         switch (randPtn[0])
         {
             case 0:
-                StartCoroutine(test1(ptnPos[0]));
+                Screen_Scale_Control();
                 break;
 
             case 1:
@@ -228,7 +242,7 @@ public class PatternManager : MonoBehaviour
         switch (randPtn[1])
         {
             case 0:
-                StartCoroutine(test1(ptnPos[1]));
+                Screen_Scale_Control();
                 break;
 
             case 1:
@@ -459,7 +473,6 @@ public class PatternManager : MonoBehaviour
       
     }
 
- 
 
 
     IEnumerator Shooting()
@@ -658,5 +671,18 @@ public class PatternManager : MonoBehaviour
         Invoke("DoPattern", 5f);
 
 
+    }
+
+    void Screen_Scale_Control()
+    {
+        int randSSC = Random.Range(0, 12);
+        //   cam.transform.position = new Vector3(0,0,camZ[randSSC]);
+
+        iTween.MoveTo(cam, iTween.Hash("z", camZ[randSSC], "time", 0.5f, "easeType", "Linear"));
+        Invoke("Screen_Scale_Init", 4f);
+    }
+    void Screen_Scale_Init()
+    {
+        iTween.MoveTo(cam, iTween.Hash("z", -1, "time", 0.5f, "easeType", "Linear"));
     }
 }
