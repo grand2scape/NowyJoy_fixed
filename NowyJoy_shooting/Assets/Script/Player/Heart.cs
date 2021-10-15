@@ -6,10 +6,12 @@ public class Heart : MonoBehaviour
 {
     GameManager gm;
     public SpriteRenderer sprRend;
+    Animator anim;
     // Start is called before the first frame update
     void Awake()
     {
         gm = GameObject.Find("gameManager").GetComponent<GameManager>();
+        anim = GetComponentInParent<Animator>();
     }
 
     // Update is called once per frame
@@ -33,17 +35,17 @@ public class Heart : MonoBehaviour
 
         gameObject.layer = 7;
         transform.parent.gameObject.layer = 7;
-
-        sprRend.color = new Color(1, 1, 1, 0.4f);
+        anim.SetTrigger("Hit");
+    //    sprRend.color = new Color(1, 1, 1, 0.4f);
 
         Invoke("OffDamaged", 1.5f);
     }
 
-    void OffDamaged()
+    public void OffDamaged()
     {
         gameObject.layer = 6;
         transform.parent.gameObject.layer = 6;
 
-        sprRend.color = new Color(1, 1, 1, 1);
+     //   sprRend.color = new Color(1, 1, 1, 1);
     }
 }

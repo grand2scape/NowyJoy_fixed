@@ -105,7 +105,7 @@ public class Title : MonoBehaviour
         {
             yield return new WaitForSecondsRealtime(0.1f);
             
-            Add(2);
+            Add(4);
         }
     }
     public void logomove()

@@ -14,11 +14,11 @@ public class Wall : MonoBehaviour
     void Update()
     {
        
-        Vector3 Spacepos = Camera.main.ScreenToWorldPoint(transform.position);
-        Vector3 Down = Camera.main.ScreenToWorldPoint(new Vector3(540, 1938, Spacepos.z));
-        Vector3 Up = Camera.main.ScreenToWorldPoint(new Vector3(540, -20, Spacepos.z));
-        Vector3 Left = Camera.main.ScreenToWorldPoint(new Vector3(1088, 960, Spacepos.z));
-        Vector3 Right = Camera.main.ScreenToWorldPoint(new Vector3(-9.6f, 960, Spacepos.z));
+      //  Vector3 Spacepos = Camera.main.ScreenToWorldPoint(transform.position);
+        Vector3 Down = Camera.main.WorldToViewportPoint(new Vector2(0,-5));
+        Vector3 Up = Camera.main.WorldToViewportPoint(new Vector2(0, 5));
+        Vector3 Left = Camera.main.WorldToViewportPoint(new Vector2(-2.8f, 0));
+        Vector3 Right = Camera.main.WorldToViewportPoint(new Vector2(2.8f, 0));
 
         Walls[0].transform.position = Up;
         Walls[1].transform.position = Right;

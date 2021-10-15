@@ -30,6 +30,9 @@ public class Player : MonoBehaviour
 
     float transferspeed = 0.15f; // 크기 조정비율(inspector 기준)
 
+    // 활성화 여부
+    public bool isActive;
+
     Heart heart;
 
     void Start()
@@ -44,6 +47,36 @@ public class Player : MonoBehaviour
     {
         OnDrag();
         Update_LookRatation();
+        ActiveTrue();
+        ActiveFalse();
+
+        Vector3 pos = Camera.main.WorldToViewportPoint(transform.position);
+
+
+
+        if (pos.x < 0f) pos.x = 0;
+
+        if (pos.x > 1f) pos.x = 1;
+
+        if (pos.y < 0) pos.y = 0;
+
+        if (pos.y > 1) pos.y = 1;
+
+
+
+        transform.position = Camera.main.ViewportToWorldPoint(pos);
+
+
+
+    
+    }
+
+    private void OnCollisionEnter2D(Collision2D collision)
+    {
+        if(collision.gameObject.CompareTag("Thorn"))
+        {
+            heart.OnDamaged();
+        }
     }
 
     private void OnTriggerEnter2D(Collider2D collision)
@@ -55,6 +88,21 @@ public class Player : MonoBehaviour
         }
     }
  
+    void ActiveTrue()
+    {
+        if(isActive)
+        {
+            gameObject.SetActive(true);
+        }
+    }
+
+    void ActiveFalse()
+    {
+        if (!isActive)
+        {
+            gameObject.SetActive(false);
+        }
+    }
 
 
     public void OnDrag()

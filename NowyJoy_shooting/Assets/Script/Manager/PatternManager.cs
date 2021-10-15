@@ -18,10 +18,10 @@ public class PatternManager : MonoBehaviour
     public Transform bulletPos;  
     public float BulletAspeed;
     public float shootSpeed_target;
-    bool isShooting = false;
+    
 
     // 스핀샷 패턴
-    bool isSpin = false;
+    
     public float shootSpeed_spin;
 
     // 도형 패턴
@@ -66,20 +66,32 @@ public class PatternManager : MonoBehaviour
     float phi;
     List<float> v = new List<float>();
     List<float> xx = new List<float>();
-    bool isShape = false;
+    
 
-    // 화면 크기
+    // 화면 크기 조절 패턴
     public GameObject cam;
     public float[] camZ;
 
+    // 거울 패턴
+    public GameObject player;
+    public GameObject heart;
+    public GameObject centerLine;
+    public Vector3 ClonePos;
+    public Vector3 PlayerPos;
+    public GameObject Warning_Mirror;
+    Animator anim;
+    
 
-    public GameObject NowyJoy;
+    GameObject NowyJoy;
     Title title;
 
     private void Awake()
     {  
         title = GameObject.Find("Trigger").GetComponent<Title>();
         target = GameObject.FindWithTag("Player");
+        player = GameObject.Find("Player");
+        heart = target;
+        anim = player.GetComponent<Animator>();
         shapePos[0] = GameObject.Find("bulletPos_U");
         shapePos[1] = GameObject.Find("bulletPos_D");
         shapePos[2] = GameObject.Find("bulletPos_R");
@@ -95,9 +107,10 @@ public class PatternManager : MonoBehaviour
     private void OnEnable()
     {
 
-        StartCoroutine("Shooting");
-        Invoke("DoPattern", 5f);
+         StartCoroutine("Shooting");
+         Invoke("DoPattern", 5f);
          DoPtn();
+      //  StartMirror();
     }
     private void Update()
     {
@@ -125,7 +138,8 @@ public class PatternManager : MonoBehaviour
         }
         if (Input.GetKeyDown(KeyCode.A))
         {
-            Screen_Scale_Control();
+            // Screen_Scale_Control();
+            StartCoroutine("mirrorPnt");
         }
         if (Input.GetKeyDown(KeyCode.Z))
         {
@@ -210,7 +224,7 @@ public class PatternManager : MonoBehaviour
                 break;
 
             case 1:
-                StartCoroutine(test2(ptnPos[0]));
+                StartCoroutine("mirrorPnt");
                 break;
 
             case 2:
@@ -246,7 +260,7 @@ public class PatternManager : MonoBehaviour
                 break;
 
             case 1:
-                StartCoroutine(test2(ptnPos[1]));
+                StartCoroutine("mirrorPnt");
                 break;
 
             case 2:
@@ -345,12 +359,12 @@ public class PatternManager : MonoBehaviour
     public IEnumerator spin()
     {
        
-            StartCoroutine("spinning");
-            isPatterning = true;
+        StartCoroutine("spinning");
+        isPatterning = true;
         yield return new WaitForSeconds(2.5f);
-            StopCoroutine("spinning");
-              isPatterning = false;
-             Invoke("DoPattern", 5f);
+        StopCoroutine("spinning");
+        isPatterning = false;
+        Invoke("DoPattern", 5f);
         
     }
 
@@ -673,16 +687,75 @@ public class PatternManager : MonoBehaviour
 
     }
 
-    void Screen_Scale_Control()
+    void Screen_Scale_Control() // 화면 크기 조절
     {
-        int randSSC = Random.Range(0, 12);
+        int randSSC = Random.Range(0, 12); // 화면 크기 랜덤 추첨
         //   cam.transform.position = new Vector3(0,0,camZ[randSSC]);
 
         iTween.MoveTo(cam, iTween.Hash("z", camZ[randSSC], "time", 0.5f, "easeType", "Linear"));
-        Invoke("Screen_Scale_Init", 4f);
+        Invoke("Screen_Scale_Init", 4f); // 초기화 함수 발동
     }
-    void Screen_Scale_Init()
+    void Screen_Scale_Init() // 화면 크기 초기화
     {
         iTween.MoveTo(cam, iTween.Hash("z", -1, "time", 0.5f, "easeType", "Linear"));
     }
+
+    void StartMirror()
+    {
+        StartCoroutine("mirrorPnt");
+    }
+
+
+    IEnumerator mirrorPnt() // 거울 패턴
+    {
+        
+        // 경고표시
+
+        Warning_Mirror.SetActive(true);
+        yield return new WaitForSeconds(1.5f);
+        Warning_Mirror.SetActive(false);
+
+        // 플레이어 비활성화
+       
+        
+      
+            player.GetComponent<Animator>().SetTrigger("Out");
+             yield return new WaitForSeconds(1f);
+         player.SetActive(false);
+ 
+        // 중앙선 드랍
+
+        centerLine.SetActive(true);
+        iTween.MoveTo(centerLine, iTween.Hash("z", 0, "time", 1.5f, "easeType", "EaseOutBounce"));
+
+        // 플레이어 활성화 및 분열
+
+        yield return new WaitForSeconds(2f);
+        GameObject playerClone = objManager.MakeObj("playerClone"); // 클론 생성
+        player.SetActive(true);
+        playerClone.transform.position = ClonePos;
+        player.transform.position = PlayerPos;
+       
+         playerClone.GetComponent<Animator>().SetTrigger("In");
+        player.GetComponent<Animator>().SetTrigger("In");
+
+
+        // 거울 패턴 종료
+
+        yield return new WaitForSeconds(4f);
+
+        iTween.MoveTo(centerLine, iTween.Hash("x", -10, "time", 1f, "easeType", "Linear"));
+       
+          playerClone.GetComponent<Animator>().SetTrigger("Out");
+
+          yield return new WaitForSeconds(1f);
+        centerLine.SetActive(false);
+        centerLine.transform.position = new Vector3(0, 0, -1.5f);
+        playerClone.SetActive(false);
+
+        
+
+        Invoke("StartMirror", 10f);
+    }
+
 }
