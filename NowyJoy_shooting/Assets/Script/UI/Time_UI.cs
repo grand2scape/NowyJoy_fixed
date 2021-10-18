@@ -6,13 +6,21 @@ public class Time_UI : MonoBehaviour
 {
     int min;
     float sec;
+    public bool isClear;
 
-    public Text txt;
+   
+    Text txt;
+   
+    private void Awake()
+    {
+     
+        txt = transform.GetChild(1).GetComponent<Text>();
 
-    
+    }
+
     void Update()
     {
-        time();
+        time();     
     }
 
     void time()
@@ -27,4 +35,5 @@ public class Time_UI : MonoBehaviour
         
     }
    
+    
 }
